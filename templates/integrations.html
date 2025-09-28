@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Integrations - Workflow Automation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .integration-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .integration-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .integration-logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+        .integration-title {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .integration-status {
+            margin-left: auto;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .disconnect-btn {
+            background-color: #e74c3c;
+        }
+        .disconnect-btn:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .auth-info {
+            background-color: #e7f3fe;
+            border: 1px solid #b6dcfe;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Account Integrations</h1>
+    <p>Connect your external accounts to use in workflow automation nodes.</p>
+    
+    <div id="alerts"></div>
+    
+    <div class="integration-card" id="github-integration">
+        <div class="integration-header">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" class="integration-logo">
+            <h2 class="integration-title">GitHub</h2>
+            <div class="integration-status" id="github-status">Checking...</div>
+        </div>
+        
+        <div class="auth-info">
+            <p><strong>How to get your GitHub token:</strong></p>
+            <ol>
+                <li>Go to <a href="https://github.com/settings/tokens" target="_blank">GitHub Token Settings</a></li>
+                <li>Click "Generate new token" → "Generate new token (classic)"</li>
+                <li>Add a note like "Workflow Automation"</li>
+                <li>Select scopes: <code>repo</code> (for repository access)</li>
+                <li>Click "Generate token" and copy the token value</li>
+            </ol>
+        </div>
+        
+        <form id="github-form">
+            <div class="form-group">
+                <label for="github-token">Personal Access Token</label>
+                <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+            </div>
+            <button type="submit" id="github-connect-btn">Connect GitHub Account</button>
+            <button type="button" id="github-disconnect-btn" class="disconnect-btn" style="display: none;">Disconnect Account</button>
+        </form>
+    </div>
+    
+    <div class="integration-card" id="airtable-integration">
+        <div class="integration-header">
+            <img src="https://seeklogo.com/images/A/airtable-logo-216B9AF035-seeklogo.com.png" alt="Airtable Logo" class="integration-logo">
+            <h2 class="integration-title">Airtable</h2>
+            <div class="integration-status" id="airtable-status">Checking...</div>
+        </div>
+        
+        <div class="auth-info">
+            <p><strong>How to get your Airtable API key:</strong></p>
+            <ol>
+                <li>Go to <a href="https://airtable.com/create/tokens" target="_blank">Airtable API tokens</a></li>
+                <li>Click "Create new token"</li>
+                <li>Name your token (e.g., "Workflow Automation")</li>
+                <li>Select the appropriate scopes for your bases</li>
+                <li>Copy the generated API key</li>
+            </ol>
+        </div>
+        
+        <form id="airtable-form">
+            <div class="form-group">
+                <label for="airtable-api-key">API Key</label>
+                <input type="password" id="airtable-api-key" placeholder="patXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXX">
+            </div>
+            <button type="submit" id="airtable-connect-btn">Connect Airtable Account</button>
+            <button type="button" id="airtable-disconnect-btn" class="disconnect-btn" style="display: none;">Disconnect Account</button>
+        </form>
+    </div>
+    
+    <div class="integration-card" id="notion-integration">
+        <div class="integration-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" alt="Notion Logo" class="integration-logo">
+            <h2 class="integration-title">Notion</h2>
+            <div class="integration-status" id="notion-status">Checking...</div>
+        </div>
+        
+        <div class="auth-info">
+            <p><strong>How to get your Notion API token:</strong></p>
+            <ol>
+                <li>Go to <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integrations</a></li>
+                <li>Click "New integration"</li>
+                <li>Name your integration and select the workspace</li>
+                <li>Click "Submit"</li>
+                <li>Copy the "Internal Integration Token"</li>
+                <li>Important: You need to share each database with your integration</li>
+            </ol>
+        </div>
+        
+        <form id="notion-form">
+            <div class="form-group">
+                <label for="notion-token">Access Token</label>
+                <input type="password" id="notion-token" placeholder="secret_xxxxxxxxxxxxxxxxxxxx">
+            </div>
+            <button type="submit" id="notion-connect-btn">Connect Notion Account</button>
+            <button type="button" id="notion-disconnect-btn" class="disconnect-btn" style="display: none;">Disconnect Account</button>
+        </form>
+    </div>
+
+    <script>
+        // Helper function to show alerts
+        function showAlert(message, type = 'success') {
+            const alertsContainer = document.getElementById('alerts');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertsContainer.appendChild(alert);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                alertsContainer.removeChild(alert);
+            }, 5000);
+        }
+        
+        // Helper function to update integration status
+        function updateIntegrationStatus(integration, isConnected) {
+            const statusElement = document.getElementById(`${integration}-status`);
+            const connectBtn = document.getElementById(`${integration}-connect-btn`);
+            const disconnectBtn = document.getElementById(`${integration}-disconnect-btn`);
+            
+            if (isConnected) {
+                statusElement.textContent = 'Connected';
+                statusElement.className = 'integration-status connected';
+                connectBtn.textContent = 'Update Connection';
+                disconnectBtn.style.display = 'inline-block';
+            } else {
+                statusElement.textContent = 'Not Connected';
+                statusElement.className = 'integration-status disconnected';
+                connectBtn.textContent = 'Connect Account';
+                disconnectBtn.style.display = 'none';
+            }
+        }
+        
+        // Function to get user's integrations status
+        async function getUserIntegrations() {
+            try {
+                const response = await fetch('/api/users/me/integrations', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`, // Implement getToken() for your auth system
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch integrations');
+                }
+                
+                const data = await response.json();
+                
+                // Update UI for each integration
+                updateIntegrationStatus('github', data.integrations.github?.connected || false);
+                updateIntegrationStatus('airtable', data.integrations.airtable?.connected || false);
+                updateIntegrationStatus('notion', data.integrations.notion?.connected || false);
+                
+            } catch (error) {
+                console.error('Error fetching integrations:', error);
+                showAlert('Failed to load integration status', 'danger');
+            }
+        }
+        
+        // Function to connect an integration
+        async function connectIntegration(integration, credentials) {
+            try {
+                const response = await fetch(`/api/integrations/credentials/${integration}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to connect ${integration}`);
+                }
+                
+                const data = await response.json();
+                updateIntegrationStatus(integration, true);
+                showAlert(`Successfully connected ${integration} account`);
+                
+            } catch (error) {
+                console.error(`Error connecting ${integration}:`, error);
+                showAlert(`Failed to connect ${integration} account: ${error.message}`, 'danger');
+            }
+        }
+        
+        // Function to disconnect an integration
+        async function disconnectIntegration(integration) {
+            try {
+                const response = await fetch(`/api/integrations/credentials/${integration}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to disconnect ${integration}`);
+                }
+                
+                const data = await response.json();
+                updateIntegrationStatus(integration, false);
+                showAlert(`Successfully disconnected ${integration} account`);
+                
+            } catch (error) {
+                console.error(`Error disconnecting ${integration}:`, error);
+                showAlert(`Failed to disconnect ${integration} account: ${error.message}`, 'danger');
+            }
+        }
+        
+        // GitHub form submission
+        document.getElementById('github-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = document.getElementById('github-token').value.trim();
+            
+            if (!token) {
+                showAlert('Please enter a GitHub token', 'danger');
+                return;
+            }
+            
+            await connectIntegration('github', { access_token: token });
+        });
+        
+        // Airtable form submission
+        document.getElementById('airtable-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const apiKey = document.getElementById('airtable-api-key').value.trim();
+            
+            if (!apiKey) {
+                showAlert('Please enter an Airtable API key', 'danger');
+                return;
+            }
+            
+            await connectIntegration('airtable', { api_key: apiKey });
+        });
+        
+        // Notion form submission
+        document.getElementById('notion-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = document.getElementById('notion-token').value.trim();
+            
+            if (!token) {
+                showAlert('Please enter a Notion token', 'danger');
+                return;
+            }
+            
+            await connectIntegration('notion', { access_token: token });
+        });
+        
+        // Disconnect buttons
+        document.getElementById('github-disconnect-btn').addEventListener('click', () => {
+            disconnectIntegration('github');
+        });
+        
+        document.getElementById('airtable-disconnect-btn').addEventListener('click', () => {
+            disconnectIntegration('airtable');
+        });
+        
+        document.getElementById('notion-disconnect-btn').addEventListener('click', () => {
+            disconnectIntegration('notion');
+        });
+        
+        // Helper function to get auth token from storage - implement based on your auth system
+        function getToken() {
+            return localStorage.getItem('auth_token') || '';
+        }
+        
+        // Load integrations on page load
+        document.addEventListener('DOMContentLoaded', getUserIntegrations);
+    </script>
+</body>
+</html> 

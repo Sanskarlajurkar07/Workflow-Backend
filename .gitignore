@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.pytest_cache/
+
+# Environments
+.venv/
+venv/
+.env
+.env.local
+.env.*.local
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Byte-compiled / parcel etc
+*.egg-info/
+dist/
+build/
+
+# Local config
+local_settings.py
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Coverage
+.coverage
+coverage.xml
+
+# Migrations (if you don't want to commit)
+# migrations/
+
+# Optional: add any secret files you don't want in git
+# secrets.json
