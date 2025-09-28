@@ -10,13 +10,28 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        gcc \
         build-essential \
+        gcc \
+        libssl-dev \
+        libffi-dev \
+        python3-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        zlib1g-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
+        liblcms2-dev \
+        libwebp-dev \
+        rustc \
+        cargo \
+        pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt .
+# Upgrade pip/setuptools/wheel first to get a better resolver and prebuilt wheels where available
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code

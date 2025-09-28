@@ -1,0 +1,28 @@
+# Render service manifest for Workflow-Backend
+# See: https://render.com/docs/deploy-php-and-python
+
+services:
+  - type: web
+    name: workflow-backend
+    env: python
+    plan: starter # change to 'free' or 'standard' depending on your account
+    region: oregon # change to your preferred region (e.g., oregon, iad, ewr, fra)
+    repo: https://github.com/Sanskarlajurkar07/Workflow-Backend.git
+    branch: main
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker -w 4 -b 0.0.0.0:$PORT main:app
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: MONGODB_URI
+        value: "<SET_MONGODB_URI>"
+      - key: SECRET_KEY
+        value: "<SET_SECRET_KEY>"
+      - key: SENTRY_DSN
+        value: ""
+      - key: AWS_ACCESS_KEY_ID
+        value: ""
+      - key: AWS_SECRET_ACCESS_KEY
+        value: ""
+    autoDeploy: true
+    healthCheckPath: /

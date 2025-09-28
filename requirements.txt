@@ -46,7 +46,10 @@ google-auth-oauthlib>=1.0.0  # For Google OAuth
 PyPDF2>=3.0.0  # For PDF text extraction
 python-docx>=0.8.11  # For DOCX processing
 python-pptx>=0.6.21  # For PowerPoint processing
-textract>=1.6.5  # For extracting text from various document formats
+# textract>=1.6.5  # For extracting text from various document formats
+# textract is commented out because it frequently requires many system
+# libraries and can cause dependency resolution problems in slim images.
+# Re-enable and test separately if you need it.
 pytz>=2023.3  # For timezone handling
 
 # File storage and sharing dependencies
@@ -65,7 +68,8 @@ psutil==5.9.6
 
 # Performance Optimization
 aioredis==2.0.1
-motor==3.3.2
+# motor is required above with >=3.3.0; avoid pinning twice
+# motor==3.3.2
 numpy==1.25.2
 
 # Security Hardening
