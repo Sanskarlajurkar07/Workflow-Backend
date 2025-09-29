@@ -754,18 +754,33 @@ async def create_session(request: Request, data: dict):
             logger.error(f"User not found for email: {user_email}")
             raise HTTPException(status_code=401, detail="User not found")
         
-        # Set session data
+        # Set session data server-side (SessionMiddleware) for convenience
         logger.info(f"Setting session for user ID: {str(user['_id'])}")
         request.session["user_id"] = str(user["_id"])
         request.session["email"] = user["email"]
-        
-        # Return basic user info
-        logger.info(f"Session created successfully for: {user_email}")
-        return {
+
+        # Also explicitly set a secure cookie for clients that prefer cookie-based auth
+        response = JSONResponse({
             "success": True,
             "user_id": str(user["_id"]),
             "email": user["email"]
-        }
+        })
+
+        # Cookie parameters: httponly, secure (when FRONTEND_URL is https), samesite=None for cross-site
+        is_https_frontend = settings.FRONTEND_URL.startswith("https")
+        response.set_cookie(
+            key=settings.SESSION_COOKIE_NAME,
+            value="1",
+            httponly=True,
+            secure=is_https_frontend,
+            samesite="none" if is_https_frontend else "lax",
+            path='/',
+            domain=settings.SESSION_COOKIE_DOMAIN or None,
+            max_age=86400
+        )
+
+        logger.info(f"Session created successfully for: {user_email}")
+        return response
     except jwt.JWTError as e:
         logger.error(f"JWT error: {str(e)}")
         raise HTTPException(status_code=401, detail=f"Invalid token format: {str(e)}")
@@ -777,7 +792,14 @@ async def create_session(request: Request, data: dict):
 async def logout(request: Request):
     """Clear the user's session cookie."""
     request.session.clear()
-    return {"message": "Logged out successfully"}
+    response = JSONResponse({"message": "Logged out successfully"})
+    # Clear the cookie for the client
+    response.delete_cookie(
+        key=settings.SESSION_COOKIE_NAME,
+        path='/',
+        domain=settings.SESSION_COOKIE_DOMAIN or None
+    )
+    return response
 
 @router.post("/refresh")
 async def refresh_session(request: Request):

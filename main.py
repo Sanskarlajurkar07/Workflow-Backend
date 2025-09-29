@@ -157,7 +157,7 @@ is_https = settings.FRONTEND_URL.startswith("https")
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.OAUTH2_SECRET,
-    session_cookie="flowmind_session",
+    session_cookie=settings.SESSION_COOKIE_NAME,
     max_age=86400,  # Increase to 24 hours for better persistence
     # For cross-site cookies (deployed frontend on different origin), browsers require SameSite=None and Secure
     same_site=("none" if is_https else "lax"),  # Use None+Secure for HTTPS deployments, lax for local dev

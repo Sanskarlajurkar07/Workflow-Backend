@@ -43,6 +43,8 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5174"
     # Optional domain to set for session cookies (set in production to your frontend domain)
     SESSION_COOKIE_DOMAIN: Optional[str] = None
+    # Name for the session cookie used by SessionMiddleware and explicit cookie set by auth
+    SESSION_COOKIE_NAME: str = "flowmind_session"
     
     # Rate limiting settings
     ENABLE_RATE_LIMITING: bool = True
