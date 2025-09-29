@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     HUBSPOT_CLIENT_ID: str = "cbecf41d-26a0-4c8c-b78d-7c3ff4a84250"
     HUBSPOT_CLIENT_SECRET: str = "c1910040-c624-4fb5-a32e-438ef09b07d8"
     FRONTEND_URL: str = "http://localhost:5174"
+    # Optional domain to set for session cookies (set in production to your frontend domain)
+    SESSION_COOKIE_DOMAIN: Optional[str] = None
     
     # Rate limiting settings
     ENABLE_RATE_LIMITING: bool = True
@@ -48,7 +50,14 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_HOUR: int = 1000
     
     # CORS settings
-    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://localhost:5174", "http://localhost", "http://localhost:80"]
+    # Add your deployed frontend origin(s) here. Exact origins are required when allow_credentials=True.
+    CORS_ORIGINS: List[str] = [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost",
+        "http://localhost:80",
+        "https://workflow-frontend-2gap.vercel.app"
+    ]
     
     # AI Model API Keys 
     OPENAI_API_KEY: Optional[str] = None

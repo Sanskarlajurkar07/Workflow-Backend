@@ -159,10 +159,11 @@ app.add_middleware(
     secret_key=settings.OAUTH2_SECRET,
     session_cookie="flowmind_session",
     max_age=86400,  # Increase to 24 hours for better persistence
-    same_site="lax",  # Changed from "strict" to "lax" for better OAuth compatibility
+    # For cross-site cookies (deployed frontend on different origin), browsers require SameSite=None and Secure
+    same_site=("none" if is_https else "lax"),  # Use None+Secure for HTTPS deployments, lax for local dev
     https_only=is_https,  # Set based on HTTPS usage
     path="/",  # Make sure cookie is available for all paths
-    domain="localhost"  # Explicitly set for local development
+    domain=settings.SESSION_COOKIE_DOMAIN or None  # Use configured domain if provided
 )
 
 # Add rate limiting middleware - after session middleware for user identification
